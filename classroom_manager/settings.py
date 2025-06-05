@@ -18,6 +18,17 @@ ALLOWED_HOSTS = [
     '.up.railway.app'
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://bored-ring-production.up.railway.app',
+    # If you might have other subdomains or a custom domain, add them here too.
+    # For Railway, often you can use a wildcard for the subdomain if it changes:
+    'https://*.up.railway.app',
+    'https://*.railway.app',
+    # Also include your local development origins if you're using https locally
+    # 'https://127.0.0.1:8000',
+    # 'https://localhost:8000',
+]
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',

@@ -1,0 +1,1 @@
+web: gunicorn classroom_manager.wsgi --log-file -

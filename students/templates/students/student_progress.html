@@ -1,0 +1,94 @@
+{% extends 'students/base.html' %}
+
+{% block title %}{{ student.full_name }} Progress - Classroom Manager{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>{{ student.full_name }}</h1>
+        <p class="text-muted mb-0">Student ID: {{ student.student_id }} | Email: {{ student.email }}</p>
+        {% if student.github_username %}
+            <p class="mb-0">
+                <i class="fab fa-github"></i> 
+                <a href="https://github.com/{{ student.github_username }}" target="_blank">{{ student.github_username }}</a>
+            </p>
+        {% endif %}
+    </div>
+    <a href="{% url 'student_list' %}" class="btn btn-secondary">Back to Students</a>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Assignment Progress</h5>
+    </div>
+    <div class="card-body">
+        {% if progress %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Assignment</th>
+                            <th>Status</th>
+                            <th>Score</th>
+                            <th>Due Date</th>
+                            <th>GitHub Repo</th>
+                            <th>Submitted</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in progress %}
+                            <tr>
+                                <td>
+                                    <strong>{{ p.assignment.title }}</strong><br>
+                                    <small class="text-muted">{{ p.assignment.description|truncatewords:10 }}</small>
+                                </td>
+                                <td>
+                                    {% if p.status == 'not_started' %}
+                                        <span class="badge bg-secondary">Not Started</span>
+                                    {% elif p.status == 'in_progress' %}
+                                        <span class="badge bg-warning">In Progress</span>
+                                    {% elif p.status == 'submitted' %}
+                                        <span class="badge bg-info">Submitted</span>
+                                    {% elif p.status == 'graded' %}
+                                        <span class="badge bg-success">Graded</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if p.score %}
+                                        <strong>{{ p.score }}/{{ p.assignment.max_points }}</strong>
+                                    {% else %}
+                                        <span class="text-muted">Not graded</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ p.assignment.due_date|date:"M d, Y H:i" }}</td>
+                                <td>
+                                    {% if p.github_repo_url %}
+                                        <a href="{{ p.github_repo_url }}" target="_blank" class="btn btn-sm btn-outline-dark">
+                                            <i class="fab fa-github"></i> View
+                                        </a>
+                                    {% else %}
+                                        <span class="text-muted">No repo</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if p.submission_date %}
+                                        {{ p.submission_date|date:"M d, Y H:i" }}
+                                    {% else %}
+                                        <span class="text-muted">Not submitted</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-4">
+                <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">No assignment progress yet</h5>
+                <p class="text-muted">Progress will appear here once assignments are created.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

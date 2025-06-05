@@ -1,0 +1,74 @@
+{% extends 'students/base.html' %}
+
+{% block title %}Students - Classroom Manager{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Students</h1>
+    <div>
+        <a href="{% url 'export_students_csv' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-download"></i> Export CSV
+        </a>
+        <a href="{% url 'student_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add Student
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if students %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>GitHub</th>
+                            <th>Enrolled</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                            <tr>
+                                <td><strong>{{ student.student_id }}</strong></td>
+                                <td>{{ student.full_name }}</td>
+                                <td>{{ student.email }}</td>
+                                <td>
+                                    {% if student.github_username %}
+                                        <a href="https://github.com/{{ student.github_username }}" target="_blank">
+                                            <i class="fab fa-github"></i> {{ student.github_username }}
+                                        </a>
+                                    {% else %}
+                                        <span class="text-muted">Not set</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ student.enrollment_date|date:"M d, Y" }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{% url 'student_update' student.pk %}" class="btn btn-outline-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{% url 'student_progress' student.pk %}" class="btn btn-outline-info">
+                                            <i class="fas fa-chart-line"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-4">
+                <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">No students enrolled yet</h5>
+                <p class="text-muted">Add your first student to get started.</p>
+                <a href="{% url 'student_create' %}" class="btn btn-primary">Add Student</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
